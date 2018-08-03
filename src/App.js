@@ -15,7 +15,7 @@ import Sets from './sets'
 
 const MtgApp = ({ store }) => (
   <Provider store={store}>
-    <Router>
+    <Router basename="/mtg">
       <div>
         <Header />
 

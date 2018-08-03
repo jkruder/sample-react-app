@@ -5,6 +5,7 @@
   "dependencies": {
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
+    "express": "^4.16.3",
     "jest-enzyme": "^6.0.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
@@ -31,6 +32,16 @@
   },
   "devDependencies": {
     "@storybook/react": "^3.4.8",
+    "nodemon": "^1.18.3",
     "redux-devtools-extension": "^2.13.5"
+  },
+  "proxy": {
+    "/[^static]": {
+      "target": "http://localhost:3001/",
+      "toProxy": true
+    },
+    "/mtg": {
+      "target": "http://localhost:3001/"
+    }
   }
 }

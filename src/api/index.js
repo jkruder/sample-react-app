@@ -1,6 +1,15 @@
 const BASE_URL = 'https://api.scryfall.com'
 
 // Start - Utility
+class HttpError extends Error {
+  constructor(response) {
+    const errorText = response.statusText || response.status
+    super(`${errorText} for ${response.url}`)
+    this.name = 'HttpError'
+    this.response = response
+  }
+}
+
 export function buildQueryString(params) {
   const queryString = new URLSearchParams()
   Object.keys(params).forEach((key) => queryString.append(key, params[key]))
@@ -21,9 +30,7 @@ export async function executeFetch(url, options = {}) {
 
   const response = await fetch(url, options)
   if (!response.ok) {
-    const error = new Error(response.statusText || response.status)
-    error.response = response
-    throw error
+    throw new HttpError(response)
   }
 
   return response.json()
@@ -36,7 +43,7 @@ export async function executeFetch(url, options = {}) {
  * @return {Object} Returns an Object containing all sets.
  */
 async function getAllSets() {
-  return executeFetch(`${BASE_URL}/sets`)
+  return await executeFetch(`${BASE_URL}/sets`)
 }
 
 /**
@@ -46,7 +53,7 @@ async function getAllSets() {
  * @return {Object}     Returns an Object with the information for the specified set.
  */
 async function getSet(set) {
-  return executeFetch(`${BASE_URL}/sets/${set}`)
+  return await executeFetch(`${BASE_URL}/sets/${set}`)
 }
 
 /**
@@ -62,7 +69,7 @@ async function getCardsInSet(set) {
     unique: 'prints'
   }
 
- return executeFetch(`${BASE_URL}/cards/search?${buildQueryString(params)}`)
+ return await executeFetch(`${BASE_URL}/cards/search?${buildQueryString(params)}`)
 }
 
 export default {

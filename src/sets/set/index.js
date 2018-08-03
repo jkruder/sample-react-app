@@ -8,38 +8,24 @@ class Set extends Component {
     super(props)
 
     this.state = {}
-
-    this.fetchCards = this.fetchCards.bind(this)
   }
 
   componentDidMount() {
-    this.fetchMetadata()
-      .then(this.fetchCards)
+    this.fetchData()
   }
 
-  fetchMetadata() {
+  async fetchData() {
     const code = this.props.match.params.code
-    return Api.getSet(code)
-      .then((response) => response.json())
-      .then((json) => {
-        this.setState({metadata: json})
-      })
-  }
+    const metadata = await Api.getSet(code)
+    const cards = await Api.getCardsInSet(metadata.code)
 
-  fetchCards() {
-    const metadata = this.state.metadata
-    return Api.getCardsInSet(metadata.code)
-      .then((response) => response.json())
-      .then((json) => {
-        this.setState({cards: json})
-      })
+    this.setState({ metadata, cards })
   }
 
   renderCard(card) {
     return (
-      <List.Item style={{borderLeft: 'none'}}>
+      <List.Item style={{borderLeft: 'none'}} key={card.id}>
         <Card.components.Card
-          key={card.id}
           id={card.id}
           name={card.name}
           imageUri={card.image_uris.normal}
